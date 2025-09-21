@@ -81,6 +81,11 @@ Ce squelette offre la possibilité de déboguer le code du serveur à l'aide de 
 
 Voici comment il est possible de déboguer le projet à l'aide de différents environnements de développement.
 
+
+### Diagramme de classes logicielles
+![Diagramme de classes (App)](
+http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/cc-probitaille/laboratoire-0-ZiadChaouche/master/docs/modeles/App.puml
+)
 ### Débogage avec Visual Studio Code
 
 VS Code offre la possibilité d'ajouter des configurations d'exécution à l'aide d'un fichier local. Ce fichier doit être nommé `launch.json` et être placé dans un dossier nommé `.vscode` à la racine du projet.
@@ -105,115 +110,3 @@ On peut utiliser ce fichier afin de créer des configurations d'exécution de d�
         }
     ]
 }
-```
-
-Le lien suivant présente les subtilités de l'utilisation du fichier `launch.json` de VS Code dans le cadre d'un projet NodeJS : <https://code.visualstudio.com/docs/nodejs/nodejs-debugging>
-
-Les configurations créées dans ce fichier peuvent ensuite être lancées à partir de l'onglet «&nbsp;Run&nbsp;» de la barre de régions à gauche de VS Code.
-
-Sinon, il est possible d'attacher le débogueur de VS Code à une nouvelle exécution du projet sans avoir à créer un fichier `launch.json`. Il suffit de se rendre sur le fichier `package.json` et de cliquer sur le bouton «&nbsp;Debug&nbsp;» qui apparaît au-dessus de la section «&nbsp;Script&nbsp;».
-
-Une fois le débogueur attaché par l'une ou l'autre des méthodes présentées ci-dessus, l'exécution du code cessera lors de la rencontre d'un point d'arrêt sur un fichier TypeScript et il sera possible d'inspecter la valeur des variables visibles.
-
-Pour plus d'informations au sujet de l'utilisation des breakpoints dans VS Code, voir <https://code.visualstudio.com/docs/editor/debugging#_breakpoints>
-
-### Débogage avec JetBrains WebStorm
-
-Les mêmes instructions présentées dans cette section peuvent être utilisées pour déboguer le projet à partir d'un autre environnement JetBrains (comme IntelliJ) lorsque les plug-ins nécessaires sont installés.
-
-Dans WebStorm, il est possible de créer une configuration d'exécution à l'aide de la liste déroulante à côté du bouton d'exécution «&nbsp;Run&nbsp;». Pour ce projet, il est nécessaire de créer une configuration de type «&nbsp;npm&nbsp;» et de lui associer la commande «&nbsp;run&nbsp;» ainsi que le script «&nbsp;start&nbsp;» ou «&nbsp;start:watch&nbsp;».
-
-Le lien suivant présente les subtilités de cette configuration avec plus de détails : <https://www.jetbrains.com/help/webstorm/run-debug-configuration-npm.html>
-
-Les configurations ainsi créées peuvent ensuite être lancées en mode débogage en cliquant sur le bouton «&nbsp;Debug&nbsp;» à droite du bouton «&nbsp;Start&nbsp;».
-
-Sinon, il est possible d'attacher le débogueur de WebStorm à une nouvelle exécution du projet sans avoir à créer une nouvelle configuration d'exécution. Il suffit de se rendre sur le fichier `package.json` et de cliquer sur le bouton en forme de triangle vert à côté des scripts «&nbsp;start&nbsp;» ou «&nbsp;start:watch&nbsp;» et de sélectionner l'option «&nbsp;Debug&nbsp;».
-
-Une fois le débogueur attaché par l'une ou l'autre des méthodes présentées ci-dessus, l'exécution du code cessera lors de la rencontre d'un point d'arrêt sur un fichier TypeScript et il sera possible d'inspecter la valeur des variables visibles.
-
-Pour plus d'informations au sujet de l'utilisation des breakpoints dans WebStorm, voir <https://www.jetbrains.com/help/webstorm/using-breakpoints.html>
-
-  </p>
-  </details>
-
-## Couplage souhaitable entre la couche Présentation et la couche Domaine
-
-Dans un design favorisant la maintenabilité, on évite que la couche Présentation ait la responsabilité de gérer les évènements système (opérations système). Larman présente dans son livre un exemple avec un JFrame (en Java Swing) à la figure F16.24. On l'adapte ici au contexte d'un service Web dans le framework Express (Node.js):
-
-![Diagramme de séparation des couches avec une opération système envoyée au contrôleur GRASP](http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/profcfuhrmanets/log210-jeu-de-des-node-express-ts/master/docs/modeles/figure-f16.24-web.puml)
-
-Dans la figure ci-dessus, l'objet `:JeuDeDes` (qui est un objet en dehors de la couche présentation) reçoit l'opération système `demarrerJeu(nom)` selon le principe GRASP Contrôleur. Ce squelette respecte cette séparation.
-
-Voici la même figure, mais sous forme de diagramme de séquence avec l'acteur. On y voit tous les détails sordides de l'implémentation avec Node Express. **Notez que cette figure est présentée pour faciliter la compréhension seulement. On ne produit pas ce genre de diagramme dans la méthodologie**.
-
-![Une opération système du DSS est envoyée par la couche présentation et reçue par un objet (le contrôleur GRASP) dans la couche domaine](http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/profcfuhrmanets/log210-jeu-de-des-node-express-ts/master/docs/modeles/dss-details-demarrerJeu.puml)
-
-## Artefacts d'analyse et de conception
-
-### Cas d'utilisation
-
-#### Jouer aux dés
-
-1. Le Joueur demande à démarrer le jeu en s'identifiant.
-1. Le Joueur demande à lancer les dés.
-1. Le Système affiche le nom du joueur et le résultat de la partie, ainsi que le nombre de parties et le nombre de fois que le Joueur a gagné. Pour un lancer, si le total est égal à sept, le Joueur a gagné. Dans tous les autres cas, il a perdu.
-
-*Le Joueur répète l'étape 3 jusqu'à ce qu'il ait fini.*
-
-4. Le Joueur demande à terminer le jeu.
-1. ~~Le Système affiche un tableau de bord avec les noms des joueurs et le ratio des parties gagnées (nombre de fois gagné / nombre de lancers).~~
-
-#### Redémarrer
-
-1. Le Joueur demande à redémarrer l'application.
-2. Le Système termine tous les jeux en cours et redémarre l'application.
-
-### Diagramme de cas d'utilisation
-![Diagramme de cas d'utilisation](
-http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/cc-probitaille/laboratoire-0-ZiadChaouche/refs/heads/master/docs/modeles/dcu.puml
-)
-
-### Modèle du domaine
-
-![Diagramme de classe du Modèle du domaine](http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/profcfuhrmanets/log210-jeu-de-des-node-express-ts/master/docs/modeles/mdd.puml)
-
-### Diagramme de séquence système (DSS)
-
-![Diagramme de séquence système](http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/profcfuhrmanets/log210-jeu-de-des-node-express-ts/master/docs/modeles/dss-jouer.puml)
-
-### Contrats d'opération et Réalisations de cas d'utilisation (RDCU)
-
-#### Opération: `démarrerJeu(nom:String)`
-
-**Postconditions**
-
-- Une instance j de Joueur a été créée
-- j.nom est devenu nom
-- j a été associé à JeuDeDes
-
-**RDCU**
-
-![Diagramme de séquence, demarrerJeu](http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/profcfuhrmanets/log210-jeu-de-des-node-express-ts/master/docs/modeles/rdcu-demarrerJeu.puml)
-
-#### Opération: `jouer(nom:String)`
-
-**Postconditions**
-
-- d1.valeur est devenue un nombre entier aléatoire entre 1 et 6
-- d2.valeur est devenue un nombre entier aléatoire entre 1 et 6
-- j.nbLancers a été incrémenté sur une base de correspondance avec nom
-- j.nbLancersGagnés a été incrémenté si la totale de d1.valeur et d2.valeur est égale à 7
-
-**RDCU**
-
-![Diagramme de séquence, jouer](http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/profcfuhrmanets/log210-jeu-de-des-node-express-ts/master/docs/modeles/rdcu-jouer.puml)
-
-#### Opération: `terminerJeu(nom:String)`
-
-**Postconditions**
-
-- L'instance j de Joueur a été supprimée sur une base de correspondance avec nom
-
-![Diagramme de séquence, terminerJeu](http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/profcfuhrmanets/log210-jeu-de-des-node-express-ts/master/docs/modeles/rdcu-terminerJeu.puml)
-
-[README.md](../README.md)
