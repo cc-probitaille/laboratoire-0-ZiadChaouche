@@ -48,4 +48,14 @@ window.addEventListener("load", function()
             alert("Spécifier un nom, SVP.");
         }
     });
+
+    var btnRedemarrer = document.getElementById("redemarrer");
+    if (btnRedemarrer) {
+        btnRedemarrer.addEventListener("click", function () {
+            fetch("/api/v1/jeu/redemarrerJeu")
+            .then(function () {
+                location.reload();
+            });
+        });
+    }
 });

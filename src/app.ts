@@ -51,23 +51,27 @@ class App {
     // Route pour jouer (index)
     router.get('/', (req, res, next) => {
       res.render('index',
-        // passer objet au gabarit (template) Pug
         {
           title: `${titreBase}`,
           user: user,
           joueurs: JSON.parse(jeuRoutes.controleurJeu.joueurs)
         });
     });
-
-    // Route pour classement (stats)
     router.get('/stats', (req, res, next) => {
+      const joueurs: Array<any> = JSON.parse(jeuRoutes.controleurJeu.joueurs);
+      const joueursAvecRatio = joueurs
+        .map(j => ({
+          ...j,
+          ratio: j.lancers > 0 ? j.lancersGagnes / j.lancers : 0
+        }))
+        .sort((a, b) => (b.ratio - a.ratio) || (b.lancers - a.lancers) || a.nom.localeCompare(b.nom));
+
       res.render('stats',
-        // passer objet au gabarit (template) Pug
         {
           title: `${titreBase}`,
           user: user,
-          // créer nouveau tableau de joueurs qui est trié par ratio
-          joueurs: JSON.parse(jeuRoutes.controleurJeu.joueurs)
+          // tableau trié par ratio décroissant
+          joueurs: joueursAvecRatio
         });
     });
 
@@ -90,9 +94,7 @@ class App {
       return res.redirect('/');
     });
 
-
     this.expressApp.use('/', router);  // routage de base
-
     this.expressApp.use('/api/v1/jeu', jeuRoutes.router);  // tous les URI pour le scénario jeu (DSS) commencent ainsi
   }
 

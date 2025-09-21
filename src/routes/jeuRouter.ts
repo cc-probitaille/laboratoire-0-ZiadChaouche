@@ -46,7 +46,6 @@ export class JeuRouter {
           joueur: joueurObj
         });
     } catch (error) {
-      // console.error(error);
       this._errorCode500(error, req, res);
     }
   }
@@ -57,10 +56,8 @@ export class JeuRouter {
   public jouer(req: Request, res: Response, next: NextFunction) {
     const nom = req.params.nom;
     try {
-      // Invoquer l'opération système (du DSS) dans le contrôleur GRASP
       const resultat = this._controleurJeu.jouer(nom);
       const resultatObj = JSON.parse(resultat);
-      // flash un message selon le résultat
       const key = resultatObj.somme == 7 ? 'win' : 'info';
       req.flash(key,
         `Résultat pour ${nom}: ${resultatObj.v1} + ${resultatObj.v2} = ${resultatObj.somme}`);
@@ -71,7 +68,34 @@ export class JeuRouter {
           resultat
         });
     } catch (error) {
-      // console.error(error);
+      this._errorCode500(error, req, res);
+    }
+  }
+
+  /**
+   * redémarrer l'application (vider tous les joueurs)
+   */
+  public redemarrerJeu(req: Request, res: Response, next: NextFunction) {
+    try {
+      this._controleurJeu.redemarrerJeu(); // opération système
+      req.flash('info', "L'application redémarre");
+      res.status(200).send({
+        message: 'Success',
+        status: res.status
+      });
+    } catch (error) {
+      this._errorCode500(error, req, res);
+    }
+  }
+
+  /**
+   * lister les joueurs (pour le test de postcondition)
+   */
+  public joueurs(req: Request, res: Response, next: NextFunction) {
+    try {
+      const liste = JSON.parse(this._controleurJeu.joueurs); // []
+      res.status(200).json(liste);
+    } catch (error) {
       this._errorCode500(error, req, res);
     }
   }
@@ -81,17 +105,13 @@ export class JeuRouter {
     res.status(error.code).json({ error: error.toString() });
   }
 
-
   /**
    * terminer
    */
   public terminerJeu(req: Request, res: Response, next: NextFunction) {
-
-    // obtenir nom de la requête
     const nom = req.params.nom;
 
     try {
-      // Invoquer l'opération système (du DSS) dans le contrôleur GRASP
       const resultat = this._controleurJeu.terminerJeu(nom);
       req.flash('info', `Jeu terminé pour ${nom}`);
       res.status(200)
@@ -101,7 +121,6 @@ export class JeuRouter {
           resultat
         });
     } catch (error) {
-      // console.error(error);
       this._errorCode500(error, req, res);
     }
   }
@@ -111,11 +130,12 @@ export class JeuRouter {
      * endpoints.
      */
   init() {
-    this._router.post('/demarrerJeu', this.demarrerJeu.bind(this)); // pour .bind voir https://stackoverflow.com/a/15605064/1168342
-    this._router.get('/jouer/:nom', this.jouer.bind(this)); // pour .bind voir https://stackoverflow.com/a/15605064/1168342
-    this._router.get('/terminerJeu/:nom', this.terminerJeu.bind(this)); // pour .bind voir https://stackoverflow.com/a/15605064/1168342
+    this._router.post('/demarrerJeu', this.demarrerJeu.bind(this));
+    this._router.get('/jouer/:nom', this.jouer.bind(this));
+    this._router.get('/terminerJeu/:nom', this.terminerJeu.bind(this));
+    this._router.get('/redemarrerJeu', this.redemarrerJeu.bind(this));
+    this._router.get('/joueurs', this.joueurs.bind(this));             
   }
-
 }
 
 // exporter its configured Express.Router

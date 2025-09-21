@@ -1,0 +1,13 @@
+warning: in the working copy of 'docs/modeles/dss-redemarrerJeu.puml', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'docs/modeles/rdcu-redemarrerJeu.puml', CRLF will be replaced by LF the next time Git touches it
+M	docs/modeles/dss-redemarrerJeu.puml
+M	docs/modeles/rdcu-redemarrerJeu.puml
+M	package-lock.json
+M	package.json
+M	public/lib/main.js
+M	src/app.ts
+M	src/core/jeuDeDes.ts
+M	src/routes/jeuRouter.ts
+M	test/routes/jeuRouter-redemarrerJeu-lab0.test.ts
+M	views/index.pug
+M	views/stats.pug
