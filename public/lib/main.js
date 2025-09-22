@@ -49,13 +49,11 @@ window.addEventListener("load", function()
         }
     });
 
-    var btnRedemarrer = document.getElementById("redemarrer");
-    if (btnRedemarrer) {
-        btnRedemarrer.addEventListener("click", function () {
-            fetch("/api/v1/jeu/redemarrerJeu")
-            .then(function () {
-                location.reload();
-            });
+    
+    document.getElementById("redemarrer").addEventListener("click", function () {
+        fetch("/api/v1/jeu/redemarrerJeu")
+        .then(function () {
+            location.reload();
         });
-    }
+    });
 });

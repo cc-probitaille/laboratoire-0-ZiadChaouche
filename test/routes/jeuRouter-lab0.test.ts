@@ -2,9 +2,9 @@ import 'jest-extended';
 import { readFileSync } from 'fs';
 import path from 'path';
 
-let content = ""
+let content = "";
 beforeAll(async () => {
-  const filename = path.join('src', 'routes', 'jeuRouter.ts')
+  const filename = path.join('src', 'routes', 'jeuRouter.ts');
   content = readFileSync(filename, 'utf-8');
 });
 
@@ -25,5 +25,6 @@ describe('src/routes/jeuRouter.ts', () => {
     expect(content.includes("resultatObj.v3")).toBeTruthy();
   });
 });
+
 
 

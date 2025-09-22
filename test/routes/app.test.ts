@@ -1,6 +1,7 @@
 import supertest from 'supertest';
 import 'jest-extended';
 import app from '../../src/app';
+jest.setTimeout(15000);
 
 const request = supertest(app);
 

@@ -14,70 +14,56 @@ export class JeuRouter {
     return this._router;
   }
 
-  /**
-   * Initialiser le router
-   */
   constructor() {
-    this._controleurJeu = new JeuDeDes();  // un routeur pointe vers au moins un contrôleur GRASP
+    this._controleurJeu = new JeuDeDes();
     this._router = Router();
     this.init();
   }
 
-  /**
-   * démarrer le jeu
-   */
   public demarrerJeu(req: Request, res: Response, next: NextFunction) {
     const nom = req.body.nom;
-
     try {
-      // POST ne garantit pas que tous les paramètres de l'opération système sont présents
       if (!nom) {
         throw new InvalidParameterError('Le paramètre nom est absent');
       }
-
-      // Invoquer l'opération système (du DSS) dans le contrôleur GRASP
       const joueur = this._controleurJeu.demarrerJeu(nom);
       const joueurObj = JSON.parse(joueur);
       req.flash('info', `Nouveau jeu pour ${nom}`);
-      res.status(201)
-        .send({
-          message: 'Success',
-          status: res.status,
-          joueur: joueurObj
-        });
+      res.status(201).send({
+        message: 'Success',
+        status: res.status,
+        joueur: joueurObj
+      });
     } catch (error) {
       this._errorCode500(error, req, res);
     }
   }
 
-  /**
-   * jouer une fois aux dés
-   */
+  /** jouer une fois aux dés */
   public jouer(req: Request, res: Response, next: NextFunction) {
     const nom = req.params.nom;
     try {
       const resultat = this._controleurJeu.jouer(nom);
       const resultatObj = JSON.parse(resultat);
-      const key = resultatObj.somme == 7 ? 'win' : 'info';
-      req.flash(key,
-        `Résultat pour ${nom}: ${resultatObj.v1} + ${resultatObj.v2} = ${resultatObj.somme}`);
-      res.status(200)
-        .send({
-          message: 'Success',
-          status: res.status,
-          resultat
-        });
+      const key = resultatObj.somme <= 10 ? 'win' : 'info';
+      req.flash(
+        key,
+        `Résultat pour ${nom}: ${resultatObj.v1} + ${resultatObj.v2} + ${resultatObj.v3} = ${resultatObj.somme}`
+      );
+      res.status(200).send({
+        message: 'Success',
+        status: res.status,
+        resultat
+      });
     } catch (error) {
       this._errorCode500(error, req, res);
     }
   }
 
-  /**
-   * redémarrer l'application (vider tous les joueurs)
-   */
+  /** redémarrer l'application (vider tous les joueurs) */
   public redemarrerJeu(req: Request, res: Response, next: NextFunction) {
     try {
-      this._controleurJeu.redemarrerJeu(); // opération système
+      this._controleurJeu.redemarrerJeu();
       req.flash('info', "L'application redémarre");
       res.status(200).send({
         message: 'Success',
@@ -88,12 +74,10 @@ export class JeuRouter {
     }
   }
 
-  /**
-   * lister les joueurs (pour le test de postcondition)
-   */
+  /** lister les joueurs (pour le test de postcondition) */
   public joueurs(req: Request, res: Response, next: NextFunction) {
     try {
-      const liste = JSON.parse(this._controleurJeu.joueurs); // []
+      const liste = JSON.parse(this._controleurJeu.joueurs);
       res.status(200).json(liste);
     } catch (error) {
       this._errorCode500(error, req, res);
@@ -102,42 +86,35 @@ export class JeuRouter {
 
   private _errorCode500(error: any, req: Request, res: Response<any, Record<string, any>>) {
     req.flash('error', error.message);
-    res.status(error.code).json({ error: error.toString() });
+    const code = typeof error.code === 'number' ? error.code : 500;
+    res.status(code).json({ error: error.toString() });
   }
 
-  /**
-   * terminer
-   */
+  /** terminer */
   public terminerJeu(req: Request, res: Response, next: NextFunction) {
     const nom = req.params.nom;
-
     try {
       const resultat = this._controleurJeu.terminerJeu(nom);
       req.flash('info', `Jeu terminé pour ${nom}`);
-      res.status(200)
-        .send({
-          message: 'Success',
-          status: res.status,
-          resultat
-        });
+      res.status(200).send({
+        message: 'Success',
+        status: res.status,
+        resultat
+      });
     } catch (error) {
       this._errorCode500(error, req, res);
     }
   }
 
-  /**
-     * Take each handler, and attach to one of the Express.Router's
-     * endpoints.
-     */
+  /** attach handlers to routes */
   init() {
     this._router.post('/demarrerJeu', this.demarrerJeu.bind(this));
     this._router.get('/jouer/:nom', this.jouer.bind(this));
     this._router.get('/terminerJeu/:nom', this.terminerJeu.bind(this));
     this._router.get('/redemarrerJeu', this.redemarrerJeu.bind(this));
-    this._router.get('/joueurs', this.joueurs.bind(this));             
+    this._router.get('/joueurs', this.joueurs.bind(this));
   }
 }
 
-// exporter its configured Express.Router
 export const jeuRoutes = new JeuRouter();
 jeuRoutes.init();

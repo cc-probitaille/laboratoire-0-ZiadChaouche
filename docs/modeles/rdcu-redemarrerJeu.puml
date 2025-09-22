@@ -1,17 +1,20 @@
-@startuml RDCU_redemarrerJeu
+@startuml
+left to right direction
 
 
-participant ":JeuDeDes" as JD
-participant "joueurs: Map<String,Joueur>" as M
+class "Joueur"
+class "APIJeu" <<boundary>>
+class "ControleurJeu" <<control>> {
+  +redemarrerJeu(): void
+}
+class ":JeuDeDes" {
+  joueurs: Map<String, Joueur>
+  nbTours: int
+  +redemarrerJeu(): void
+}
 
--> JD : redemarrerJeu()
-note over JD
-selon Contrôleur
-(JeuDeDés est l'objet racine)
-end note
+"Joueur" --> "APIJeu" : GET /jeu/redemarrerJeu
+"APIJeu" --> "ControleurJeu" : redemarrerJeu()
+"ControleurJeu" --> ":JeuDeDes" : redemarrerJeu()
 
-JD -> M : clear()
-note over M
-selon Expert
-end note
 @enduml

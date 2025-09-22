@@ -86,6 +86,30 @@ Voici comment il est possible de déboguer le projet à l'aide de différents en
 ![Diagramme de classes (App)](
 http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/cc-probitaille/laboratoire-0-ZiadChaouche/master/docs/modeles/App.puml
 )
+
+### Modèle du domaine
+![MDD](
+http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/cc-probitaille/laboratoire-0-ZiadChaouche/master/docs/modeles/mdd.puml
+)
+
+### DSS jouer (3 dés)
+![DSS jouer](
+http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/cc-probitaille/laboratoire-0-ZiadChaouche/master/docs/modeles/dss-jouer-3des.puml
+)
+
+### RDCU jouer (3 dés)
+![RDCU jouer](
+http://www.plantuml.com/plantuml/proxy?cache=no&fmt=svg&src=https://raw.githubusercontent.com/cc-probitaille/laboratoire-0-ZiadChaouche/master/docs/modeles/rdcu-jouer-3des.puml
+)
+
+#### Redémarrer
+
+1. Le Joueur demande à redémarrer l'application.
+2. Le Système termine tous les jeux en cours et redémarre l'application.
+
+- d3.valeur est devenue un nombre entier aléatoire entre 1 et 6
+- j.nbLancersGagnés a été incrémenté si la totale de d1.valeur, d2.valeur, d3.valeur est plus petite ou égale à 10
+
 ### Débogage avec Visual Studio Code
 
 VS Code offre la possibilité d'ajouter des configurations d'exécution à l'aide d'un fichier local. Ce fichier doit être nommé `launch.json` et être placé dans un dossier nommé `.vscode` à la racine du projet.
